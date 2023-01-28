@@ -1,0 +1,125 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'users/css/cadastro.css' %}" rel="stylesheet">
+    <link href="{% static 'divulgar/css/novo_pet.css' %}" rel="stylesheet">
+    <link href="{% static 'divulgar/css/seus_pets.css' %}" rel="stylesheet">
+    <link href="{% static 'adotar/css/listar_pets.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="navbar bg-side sidebar box-shadow">
+            <div class="container d-flex justify-content-between">
+                <h2>ADO.TE</h2>
+                <ul class="nav flex-row">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url "dashboard" %}">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url "seus_pets" %}">MEUS PETS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url "listar_pets" %}">ADOTAR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url "novo_pet" %}">DIVULGAR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url "sair" %}">SAIR</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md">
+                    <div class="wrapper">
+                        <div class="box width80">
+                            {% if messages %}
+                                <br>
+                                {% for message in messages %}
+                                    <div class="alert {{message.tags}}">
+                                        {{message}}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <h3 class="font-vinho">ADO.TE</h3>
+                            <hr>
+                            <form action="{% url "listar_pets" %}" method="GET">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" placeholder="Cidade..." value="{% if cidade %}{{cidade}}{% endif %}" name="cidade" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <select class="form-select" name="raca">
+                                            {% for raca in racas %}
+                                                <option {% if raca_filter.id == raca.id %} selected {% endif %} value="{{raca.id}}">{{raca}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="submit" class="btn-custom-secondary" value="FILTRAR">
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-hover tabela" cellpadding="20">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Foto</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Raça</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Cidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for pet in pets %}
+                                    <tr>
+                                        <td width="20%">
+                                            <a href="{% url "ver_pet" pet.id %}"><img width="40%" src="{{pet.foto.url}}"></a>
+                                        </td>
+                                        <td>
+                                            {{pet.nome}}
+                                        </td>
+                                        <td>
+                                            {{pet.raca}}
+                                        </td>
+                                        <td>
+                                            {% if pet.status == "P" %}
+                                                <button type="button" class="btn btn-lg btn-primary btn-sm" disabled>
+                                                    Para adoção
+                                                </button>
+                                            {% elif pet.status == "A" %}
+                                                <button type="button" class="btn btn-lg btn-success btn-sm" disabled>
+                                                    Adotado
+                                                </button>
+                                            {% endif%}
+                                        </td>
+                                        <td>
+                                            {{pet.cidade}}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
